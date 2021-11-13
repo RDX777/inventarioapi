@@ -16,18 +16,16 @@ use App\Http\Controllers\auth\AuthController;
 |
 */
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])
+    ->name('post.login');
 
 Route::middleware('auth:sanctum')->prefix('tokens')->group(function (){
     
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return $request->user()->name('get.tokens.user');
     });
 
-    Route::post('/create', function (Request $request) {
-        $token = $request->user()->createToken($request->token_name);
-    
-        dd(['token' => $token->plainTextToken]);
-    });
+    Route::delete('/revoke', [AuthController::class, 'revoke'])
+    ->name('delete.tokens.revoke');
 
 });

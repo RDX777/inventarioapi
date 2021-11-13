@@ -34,7 +34,9 @@ class AuthController extends Controller
             ->header('Content-Type', 'application/json');
         }
 
-        $token = $user->createToken($request->email . strtotime('now'))->plainTextToken;
+        $user->tokens()->delete();
+
+        $token = $user->createToken($request->email . strtotime('now'), ['server:update', 'server:delete'])->plainTextToken;
 
         return response()
             ->json([
@@ -43,6 +45,10 @@ class AuthController extends Controller
             ->setEncodingOptions(JSON_UNESCAPED_SLASHES)
             ->header('Content-Type', 'application/json');
 
+    } 
+
+    public function revoke(Request $request) {
+        $request->user()->currentAccessToken()->delete();
     } 
 
 }
