@@ -19,6 +19,14 @@ class AuthController extends Controller
         $request->validated();
 
         $user = User::with('roles')->where('email', $request->email)->first();
+
+        if (! $user or ! Hash::check($request->password, $user->password))  {
+            return response()
+            ->json(['message' => 'Email ou senhas incorretos!'], 403)
+            ->setEncodingOptions(JSON_UNESCAPED_SLASHES)
+            ->header('Content-Type', 'application/json');
+        }
+
         $tokenpermission = array();
         foreach($user->roles as $role) {
             $permissions = Role::with('permissions')->find($role->id);
@@ -30,13 +38,6 @@ class AuthController extends Controller
                     array_push($tokenpermission, $permission->name);
                 }     
             }
-        }
-
-        if (! $user or ! Hash::check($request->password, $user->password))  {
-            return response()
-            ->json(['message' => 'Email ou senhas incorretos!'], 403)
-            ->setEncodingOptions(JSON_UNESCAPED_SLASHES)
-            ->header('Content-Type', 'application/json');
         }
 
         $user->tokens()->delete();
