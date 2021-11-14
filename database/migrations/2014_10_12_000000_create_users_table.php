@@ -38,6 +38,13 @@ class CreateUsersTable extends Migration
             'password' => Hash::make('Zaq12wsx'),
             'created_at' => date('Y-m-d H:i:s')
         ));
+
+        DB::table('users')->insert(array(
+            'name' => 'user sem permissao',
+            'email' => 'nuser@user',
+            'password' => Hash::make('Zaq12wsx'),
+            'created_at' => date('Y-m-d H:i:s')
+        ));
     }
 
     /**
