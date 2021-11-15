@@ -17,8 +17,7 @@ class CreateLocalsTable extends Migration
             $table->id();
             $table->string('floor', 255)->nullable();
             $table->string('location_name', 255)->nullable();
-            $table->text('observations')->nullable();
-
+            $table->text('comments', 255)->nullable();
 
         });
 

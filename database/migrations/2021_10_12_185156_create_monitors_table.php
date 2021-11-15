@@ -18,6 +18,7 @@ class CreateMonitorsTable extends Migration
             $table->string('manufacturer_name', 255)->nullable();
             $table->float('iches')->nullable();
             $table->string('model', 255)->nullable();
+            $table->text('comments', 255)->nullable();
             $table->string('serial_number', 255)->nullable();
         });
 

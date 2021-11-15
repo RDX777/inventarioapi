@@ -4,7 +4,7 @@ namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\AuthRequest;
+use App\Http\Requests\auth\AuthRequest;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -72,18 +72,18 @@ class AuthController extends Controller
 
     public function tokenme(Request $request) {
 
-        if($request->user()->tokenCan('computadores_cadastra')) {
-            $token = $request->user()->currentAccessToken()->toArray();
-            return response()->json(
-                $token,
-                200
-            );
-        } else {
+        if(! $request->user()->tokenCan('computadores_cadastra')) {
             return response()->json(
                 ['message' => 'Unauthorized'],
                 403
             );
         }
+
+        $token = $request->user()->currentAccessToken()->toArray();
+        return response()->json(
+            $token,
+            200
+        );
 
     }
 
