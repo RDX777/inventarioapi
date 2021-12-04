@@ -4,7 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\auth\AuthController;
+
 use App\Http\Controllers\api\ComputerController;
+use App\Http\Controllers\api\ImageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +47,13 @@ Route::prefix('v1')->group(function () {
 
         Route::put('update', [ComputerController::class, 'update'])
         ->name('put.computers.update');
+
+    });
+
+    Route::middleware('auth:sanctum')->prefix('images')->group(function (){
+
+        Route::get('show/{id}', [ImageController::class, 'show'])
+        ->name('get.images.show');
 
     });
 

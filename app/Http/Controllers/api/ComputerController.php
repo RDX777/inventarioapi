@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Http\Requests\api\ComputerRequest;
 
@@ -63,8 +64,16 @@ class ComputerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
+
+        if(! $request->user()->tokenCan('computador_visualiza')) {
+            return response()->json(
+                ['message' => 'Unauthorized'],
+                403
+            );
+        }
+
          //busca pelo computador
          $computer_raw = Computer::with('locals')
          ->with(['images' => function ($query){
@@ -82,54 +91,41 @@ class ComputerController extends Controller
             $computer = $computer_raw->toArray();
             unset($computer_raw);
 
-            
             //manipula dados das imagens
-            $images = array();
-            foreach ($computer['images'] as $image) {
-
-                $aimage = array(
+            $images = array_map(function ($image) {
+                return array(
                     'id' => $image['id'],
                     'file_name' => $image['file_name'],
                     'file_extension' => $image['file_extension'],
                     'url_image' => 'Comiing soon',
-                    //'url_image' => route('image.getImage', $image['id']),
+                    'url_image' => route('get.images.show', $image['id']),
                     'start_date' => $image['pivot']['start_date'],
                     'end_date' => $image['pivot']['end_date']
                 );
+            },$computer['images']); 
 
-                array_push($images, $aimage);
-                unset($aimage);
-            }
             unset($computer['images']);
             $computer = array_merge($computer, array('images' => $images));
             unset($images);
 
-
             //manipula dados do local
-            $locals = array();
-            foreach ($computer['locals'] as $local) {
-
-                $alocal = array(
+            $locals = array_map(function ($local) {
+                return array(
                     'floor' => $local['floor'],
                     'location_name' => $local['location_name'],
                     'observations' => $local['observations'],
                     'start_date' => $local['pivot']['start_date'],
                     'end_date' => $local['pivot']['end_date']
                 );
+            } , $computer['locals']);
 
-                array_push($locals, $alocal);
-                unset($alocal);
-            }
             unset($computer['locals']);
             $computer = array_merge($computer, array('locals' => $locals));
             unset($locals);
 
-
             //manipula dados do local
-            $softwares = array();
-            foreach ($computer['softwares'] as $software) {
-
-                $asoftware = array(
+            $softwares = array_map(function ($software) {
+                return array(
                     'manufacturer_name' => $software['manufacturer_name'],
                     'name' => $software['name'],
                     'version' => $software['version'],
@@ -138,10 +134,8 @@ class ComputerController extends Controller
                     'start_date' => $software['pivot']['start_date'],
                     'end_date' => $software['pivot']['end_date']
                 );
-
-                array_push($softwares, $asoftware);
-                unset($asoftware);
-            }
+            }, $computer['softwares']);
+        
             unset($computer['softwares']);
             $computer = array_merge($computer, array('softwares' => $softwares));
             unset($softwares);
