@@ -48,6 +48,9 @@ Route::prefix('v1')->group(function () {
         Route::put('update', [ComputerController::class, 'update'])
         ->name('put.computers.update');
 
+        Route::delete('delete', [ComputerController::class, 'delete'])
+        ->name('delete.computers.delete');
+
     });
 
     Route::middleware('auth:sanctum')->prefix('images')->group(function (){

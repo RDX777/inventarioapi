@@ -24,37 +24,37 @@ class CreateLocalsTable extends Migration
         DB::table('locals')->insert(array(
             'floor'=>'1 andar',
             'location_name'=>'local 0',
-            'observations'=>'Observação 0'
+            'comments'=>'Observação 0'
         ));
 
         DB::table('locals')->insert(array(
             'floor'=>'1 andar',
             'location_name'=>'local 1',
-            'observations'=>'Observação 1'
+            'comments'=>'Observação 1'
         ));
 
         DB::table('locals')->insert(array(
             'floor'=>'1 andar',
             'location_name'=>'local 2',
-            'observations'=>'Observação 2'
+            'comments'=>'Observação 2'
         ));
 
         DB::table('locals')->insert(array(
             'floor'=>'2 andar',
             'location_name'=>'local 0',
-            'observations'=>'Observação 0'
+            'comments'=>'Observação 0'
         ));
 
         DB::table('locals')->insert(array(
             'floor'=>'2 andar',
             'location_name'=>'local 1',
-            'observations'=>'Observação 1'
+            'comments'=>'Observação 1'
         ));
 
         DB::table('locals')->insert(array(
             'floor'=>'Deposito',
             'location_name'=>'Deposito',
-            'observations'=>'Observação 1'
+            'comments'=>'Observação 1'
         ));
     }
 

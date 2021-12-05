@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\api;
 
+use Exception;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 
 use App\Http\Requests\api\ComputerRequest;
-
 use App\Models\Computer;
 
 class ComputerController extends Controller
@@ -48,13 +50,11 @@ class ComputerController extends Controller
             );
         }
 
-        $request->validated();
-
         Computer::create($request->all());
        
         return response()
         ->json([
-            'message' => 'Computer stored in database.'
+            'message' => 'Computer stored in database.',
         ], 201);
     }
 
@@ -67,27 +67,27 @@ class ComputerController extends Controller
     public function show($id, Request $request)
     {
 
-        if(! $request->user()->tokenCan('computador_visualiza')) {
+        if(! $request->user()->tokenCan('computadores_visualiza')) {
             return response()->json(
                 ['message' => 'Unauthorized'],
                 403
             );
         }
 
-         //busca pelo computador
-         $computer_raw = Computer::with('locals')
-         ->with(['images' => function ($query){
-             $query->select(['images.id',
-                 'file_name',
-                 'file_extension'
-             ]);
-         }])
-         ->with('softwares')
-         ->where('id', filter_var($id, FILTER_SANITIZE_STRING))
-         ->first();
-        
-        if ($computer_raw) {
+        try {
 
+            //busca pelo computador
+            $computer_raw = Computer::with('locals')
+            ->with(['images' => function ($query){
+                $query->select(['images.id',
+                    'file_name',
+                    'file_extension'
+                ]);
+            }])
+            ->with('softwares')
+            ->where('id', filter_var($id, FILTER_SANITIZE_STRING))
+            ->firstOrFail();
+        
             $computer = $computer_raw->toArray();
             unset($computer_raw);
 
@@ -113,7 +113,7 @@ class ComputerController extends Controller
                 return array(
                     'floor' => $local['floor'],
                     'location_name' => $local['location_name'],
-                    'observations' => $local['observations'],
+                    'comments' => $local['comments'],
                     'start_date' => $local['pivot']['start_date'],
                     'end_date' => $local['pivot']['end_date']
                 );
@@ -140,17 +140,14 @@ class ComputerController extends Controller
             $computer = array_merge($computer, array('softwares' => $softwares));
             unset($softwares);
 
-        return response()
-                ->json($computer, 200)
-                ->setEncodingOptions(JSON_UNESCAPED_SLASHES)
-                ->header('Content-Type', 'application/json');
-        } else {
-            return response()
-            ->json([
-                'message' => 'Computer not found.'
-            ], 404);
+            $http_status = 200;
 
+        } catch(ModelNotFoundException $e) {
+            $computer = ['message' => 'Computer not found'];
+            $http_status = 404;
         }
+
+        return $this->http_response($computer, $http_status);
     
     }
 
@@ -172,9 +169,53 @@ class ComputerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(ComputerRequest $request)
     {
-        dd($request);
+        if(! $request->user()->tokenCan('computadores_edita')) {
+            return response()->json(
+                ['message' => 'Unauthorized'],
+                403
+            );
+        }
+
+        try {
+
+            $computer = computer::where('id', request('id'))->firstOrFail();
+
+            $computer_diff = array_diff($request->toArray(), $computer->toArray());
+            unset($computer_diff['_method']);
+
+            if (! empty($computer_diff)) {
+
+                $result_insert = Computer::where('id', request('id'))->update($computer_diff);
+                if (! $result_insert) {
+                    throw new Exception('Computer not updated');
+                }
+    
+                $computer = ['message' => 'Computer updated'];
+                $http_status = 200;
+
+            } else {
+                $computer = ['message' => 'Computer data has not been changed'];
+                $http_status = 202;
+            }
+
+        }
+        catch(ModelNotFoundException $e) {
+            $computer = ['message' => 'Computer not found'];
+            $http_status = 404;
+        }
+        catch(QueryException $e) {
+            $computer = ['message' => $e->getMessage()];
+            $http_status = 409;
+        }
+        catch(Exception $e) {
+            $computer = ['message' => $e->getMessage()];
+            $http_status = 503;
+        }
+
+        return $this->http_response($computer, $http_status);
+
     }
 
     /**
@@ -187,4 +228,27 @@ class ComputerController extends Controller
     {
         //
     }
+
+    /**
+     * Remove the specified resource from database.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {
+
+        if(! $request->user()->tokenCan('computadores_deleta')) {
+            return response()->json(
+                ['message' => 'Unauthorized'],
+                403
+            );
+        }
+
+        $result_delete = Computer::where('id', request('id'))->Deleting();
+
+        dd($result_delete);
+        
+    }
+
 }

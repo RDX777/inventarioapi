@@ -47,8 +47,14 @@ class ImageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
+        if(! $request->user()->tokenCan('imagens_visualiza')) {
+            return response()->json(
+                ['message' => 'Unauthorized'],
+                403
+            );
+        }
         try
         {
             $image = Image::where('id', request('id'))->firstOrFail();

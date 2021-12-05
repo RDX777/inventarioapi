@@ -4,6 +4,8 @@ namespace App\Http\Requests\api;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use Illuminate\Http\Request;
+
 class ComputerRequest extends FormRequest
 {
     /**
@@ -21,9 +23,9 @@ class ComputerRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(Request $request)
     {
-        return [
+        $validator = [
             'processor'=>'string|nullable',
             'memory_size'=>'numeric',
             'video'=>'string|nullable',
@@ -39,6 +41,13 @@ class ComputerRequest extends FormRequest
             'serial_number'=>'required|string|unique:App\Models\Computer,serial_number',
             'hostname' => 'required|string|unique:App\Models\Computer,hostname'
         ];
+
+        if ($request->method == 'PUT' or $request->method == 'PATCH') {
+            $validator['serial_number'] = 'required|string';
+            $validator['hostname'] = 'required|string';
+        }
+
+        return $validator;
     }
 
     public function messages() {

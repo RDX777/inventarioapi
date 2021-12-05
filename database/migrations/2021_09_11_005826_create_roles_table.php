@@ -30,6 +30,11 @@ class CreateRolesTable extends Migration
         ));
 
         DB::table('roles')->insert(array(
+            'name' => 'Imagens',
+            'description' => 'Realiza o cadastro de imagens'
+        ));
+
+        DB::table('roles')->insert(array(
             'name' => 'Monitores',
             'description' => 'Realiza o cadastro de monitores'
         ));

@@ -30,13 +30,33 @@ class CreatePermissionsTable extends Migration
         ));
 
         DB::table('permissions')->insert(array(
-            'name' => 'computador_deleta',
+            'name' => 'computadores_deleta',
             'description' => 'Exclui um computador'
         ));
 
         DB::table('permissions')->insert(array(
-            'name' => 'computador_visualiza',
+            'name' => 'computadores_visualiza',
             'description' => 'Apenas visualiza os dados de um computador'
+        ));
+
+        DB::table('permissions')->insert(array(
+            'name' => 'imagens_cadastra',
+            'description' => 'Realiza o cadastro de um novo dispositivo usb'
+        ));
+
+        DB::table('permissions')->insert(array(
+            'name' => 'imagens_edita',
+            'description' => 'Edita os dados de um dispositivo usb'
+        ));
+
+        DB::table('permissions')->insert(array(
+            'name' => 'imagens_deleta',
+            'description' => 'Exclui um dispositivo usb'
+        ));
+
+        DB::table('permissions')->insert(array(
+            'name' => 'imagens_visualiza',
+            'description' => 'Apenas visualiza os dados de um dispositivo usb'
         ));
 
         DB::table('permissions')->insert(array(

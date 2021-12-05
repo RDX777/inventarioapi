@@ -72,13 +72,6 @@ class AuthController extends Controller
 
     public function tokenme(Request $request) {
 
-        if(! $request->user()->tokenCan('computadores_cadastra')) {
-            return response()->json(
-                ['message' => 'Unauthorized'],
-                403
-            );
-        }
-
         $token = $request->user()->currentAccessToken()->toArray();
         return response()->json(
             $token,

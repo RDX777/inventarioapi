@@ -109,6 +109,26 @@ class CreatePermissionRoleTable extends Migration
             'role_id' => 5
         ));
 
+        DB::table('permission_role')->insert(array(
+            'permission_id' => 17,
+            'role_id' => 6
+        ));
+
+        DB::table('permission_role')->insert(array(
+            'permission_id' => 18,
+            'role_id' => 6
+        ));
+
+        DB::table('permission_role')->insert(array(
+            'permission_id' => 19,
+            'role_id' => 6
+        ));
+
+        DB::table('permission_role')->insert(array(
+            'permission_id' => 20,
+            'role_id' => 6
+        ));
+
     }
 
     /**
