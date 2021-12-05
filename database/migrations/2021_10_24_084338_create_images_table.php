@@ -16,6 +16,7 @@ class CreateImagesTable extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->string('file_name', 255);
+            $table->boolean('is_public')->nullable()->default(false);
             $table->string('file_extension');
         });
 
@@ -23,6 +24,7 @@ class CreateImagesTable extends Migration
 
         DB::table('images')->insert(array(
             'file_name' => 'no_image',
+            'is_public' => true,
             'file_extension' => 'jpg',
             'data' => file_get_contents(public_path() . '/no_image.jpg')
 
@@ -30,6 +32,7 @@ class CreateImagesTable extends Migration
 
         DB::table('images')->insert(array(
             'file_name' => 'micro1',
+            'is_public' => true,
             'file_extension' => 'jpg',
             'data' => file_get_contents(public_path() . '/micro1.jpg')
 

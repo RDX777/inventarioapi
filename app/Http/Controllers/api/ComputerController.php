@@ -11,6 +11,8 @@ use Illuminate\Database\QueryException;
 
 use App\Http\Requests\api\ComputerRequest;
 use App\Models\Computer;
+use App\Models\Image;
+use App\Models\Computer_Image;
 
 class ComputerController extends Controller
 {
@@ -81,7 +83,8 @@ class ComputerController extends Controller
             ->with(['images' => function ($query){
                 $query->select(['images.id',
                     'file_name',
-                    'file_extension'
+                    'file_extension',
+                    'is_public'
                 ]);
             }])
             ->with('softwares')
@@ -97,6 +100,7 @@ class ComputerController extends Controller
                     'id' => $image['id'],
                     'file_name' => $image['file_name'],
                     'file_extension' => $image['file_extension'],
+                    'is_public' => $image['is_public'],
                     'url_image' => 'Comiing soon',
                     'url_image' => route('get.images.show', $image['id']),
                     'start_date' => $image['pivot']['start_date'],
@@ -245,10 +249,29 @@ class ComputerController extends Controller
             );
         }
 
-        $result_delete = Computer::where('id', request('id'))->Deleting();
+        $computer_images = Computer::select('id')->with(['images' => function ($query){
+                $query->select(['images.id']);
+            }])
+            ->where('id', request('id'))
+            ->firstOrFail()
+            ->toArray();
 
-        dd($result_delete);
-        
+        array_map(function ($image_id) {
+            Image:: where('id', $image_id['id'])
+            ->where('is_public', false)
+            ->delete();
+        }, $computer_images['images']);
+
+        Computer::where('id', request('id'))->delete();
+
+        Computer_Image::where('computer_id', request('id'))
+            ->delete();
+
+        $computer = ['message' => 'Computer has been deleted'];
+        $http_status = 202;
+
+        return $this->http_response($computer, $http_status);
+    
     }
 
 }

@@ -5,11 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Role_User extends Model
+class Computer_Image extends Model
 {
     use HasFactory;
 
-    protected $table = "role_user";
-
-    public $timestamps = false;
+    protected $table = "computer_image";
 }

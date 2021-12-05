@@ -24,7 +24,7 @@ class CreateComputersTable extends Migration
             $table->string('network_cable_mac', 255)->nullable();
             $table->string('network_wireless_mac', 255)->nullable();
             $table->string('manufacturer_name', 255)->nullable();
-            $table->boolean('is_notebook', 255)->nullable();
+            $table->boolean('is_notebook')->nullable();
             $table->text('comments', 255)->nullable();
             $table->string('model', 255)->nullable();
             $table->string('serial_number', 255)->unique();
