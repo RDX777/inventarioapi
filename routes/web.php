@@ -14,5 +14,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return 'API version 1.0';
+    return 'API version 1.0 <br>' . date("d/m/Y G:i:s");
 });

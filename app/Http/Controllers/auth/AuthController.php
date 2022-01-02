@@ -48,6 +48,7 @@ class AuthController extends Controller
             ->json([
                 'acess_token' => $token,
                 'login' => $request->email,
+                'created_at' => date("Y-m-d G:i:s"),
                 'permissions' => $tokenpermission,
                 'token_type' => 'baerer'], 202)
             ->setEncodingOptions(JSON_UNESCAPED_SLASHES)
