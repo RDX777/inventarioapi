@@ -274,4 +274,34 @@ class ComputerController extends Controller
     
     }
 
+
+    public function listmanufacturer(Request $request) {
+
+        if(! $request->user()->tokenCan('computadores_visualiza')) {
+            return response()->json(
+                ['message' => 'Unauthorized'],
+                403
+            );
+        }
+
+        $list = Computer::selectRaw('manufacturer_name, count(*) as quantity')->groupBy('manufacturer_name')->get();
+
+        return $this->http_response($list, 200);
+    }
+
+
+    public function listall(Request $request) {
+
+        if(! $request->user()->tokenCan('computadores_visualiza')) {
+            return response()->json(
+                ['message' => 'Unauthorized'],
+                403
+            );
+        }
+
+        $list = Computer::get();
+
+        return $this->http_response($list, 200);
+    }
+
 }

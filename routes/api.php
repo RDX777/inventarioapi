@@ -51,6 +51,12 @@ Route::prefix('v1')->group(function () {
         Route::delete('delete', [ComputerController::class, 'delete'])
         ->name('delete.computers.delete');
 
+        Route::get('listmanufacturer', [ComputerController::class, 'listmanufacturer'])
+        ->name('get.computers.listmanufacturer');
+
+        Route::get('listall', [ComputerController::class, 'listall'])
+        ->name('get.computers.listall');
+
     });
 
     Route::middleware('auth:sanctum')->prefix('images')->group(function (){
